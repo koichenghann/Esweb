@@ -1,2 +1,0 @@
-# Esweb
-Frontend for esweb
