@@ -16,6 +16,7 @@ export class DashboardCollectorComponent implements OnInit{
 
 
     //variable for dynamic data
+    isLoading = true;
     username = ''
     ecolevel = '';
     pointToLevel = '';
@@ -24,10 +25,11 @@ export class DashboardCollectorComponent implements OnInit{
     pointsNeededCaption = '';
     upperLevel = 'EcoWarrior';
     ngOnInit(){
-
+      this.isLoading = true;
       this.authService.getPointsUpdatedListener().subscribe( result => {
         this.ecolevel = result.ecoLevel;
         this.ecoPoints = (Math.round(Number(result.totalPoints)*100)/100).toString();
+        this.isLoading = false;
       });
       this.authService.getPoints();
 

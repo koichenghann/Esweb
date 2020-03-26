@@ -10,6 +10,7 @@ import { MaterialsService } from '../admin-manage-material/material.service';
   styleUrls: ['./history.component.css']
 })
 export class HistoryComponent implements OnInit {
+  isLoading = true;
   userType;
 
   histories:any = null;
@@ -35,6 +36,7 @@ export class HistoryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.authService.setCurrentUrl(window.location.pathname);
 
     this.userType = this.authService.getUserType();
@@ -63,6 +65,7 @@ export class HistoryComponent implements OnInit {
   }
 
   getMaterials() {
+    this.isLoading = true;
     this.matService.getAllMaterials().subscribe( result => {
       this.materials = [];
       for ( let mat of result.materials ) {
@@ -70,6 +73,7 @@ export class HistoryComponent implements OnInit {
         mat.selected = false;
         this.materials.push(mat);
       }
+      this.isLoading = false;
       //console.log(this.materials);
     });
   }
@@ -92,6 +96,7 @@ export class HistoryComponent implements OnInit {
       this.result = result;
       this.sortedBySubmissionID = false;
       this.sortHistoryByID();
+      this.isLoading = false;
       //this.histories = result;
     });
   }
@@ -130,6 +135,7 @@ export class HistoryComponent implements OnInit {
   }
 
   getHistory() {
+    this.isLoading = true;
     this.subService.getSubmissions(this.material._id);
   }//5e6717329d4a704b408a51e9 //5e671b519d4a704b408a51eb
 

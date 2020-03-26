@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { MaterialService } from '../datatable/shared/material.service';
 import { AuthService } from '../auth/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { environment } from '../../environments/environment';
 
@@ -20,7 +21,8 @@ export class SubmissionService implements OnInit{
     private http: HttpClient,
     public router: Router,
     public materialService: MaterialService,
-    public authService: AuthService
+    public authService: AuthService,
+    public snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -36,6 +38,7 @@ export class SubmissionService implements OnInit{
       )
       .subscribe( result => {
         console.log('submission added');
+        this.snackBar.open('The submission has been ' + submission.status.toLowerCase(), null , {duration: 2000});
         this.getSubmissions(null);
       });
   }
@@ -48,6 +51,7 @@ export class SubmissionService implements OnInit{
       )
       .subscribe( result => {
         console.log('submission added');
+        this.snackBar.open('The submission has been ' + submission.status.toLowerCase(), null , {duration: 2000});
         this.getSubmissions(null);
       });
   }

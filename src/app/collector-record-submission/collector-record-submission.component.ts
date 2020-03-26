@@ -10,6 +10,10 @@ import { MaterialsService } from '../admin-manage-material/material.service';
   styleUrls: ['./collector-record-submission.component.css']
 })
 export class CollectorRecordSubmissionComponent implements OnInit {
+  submission_isLoading = true;
+  material_isLoading = true;
+  recycler_isLoading = true;
+  isSubmitting = false;
 
   userType = this.authService.getUserType();
   collectors:any = [];
@@ -35,8 +39,8 @@ export class CollectorRecordSubmissionComponent implements OnInit {
   submission_recyclerError = this.initialError;
   submission_weightError   = this.initialError;
 
-  recyclerExist = false;
-  materialExist = false;
+  recyclerExist = true;
+  materialExist = true;
 
   selectedMaterial;
   recycler;
@@ -47,6 +51,10 @@ export class CollectorRecordSubmissionComponent implements OnInit {
   constructor( public authService: AuthService, public subService: SubmissionService, public matService: MaterialsService ) { }
 
   ngOnInit(): void {
+    this.submission_isLoading = true;
+    this.material_isLoading = true;
+    this.recycler_isLoading = true;
+
     this.setMode();
     this.subscribeToSubmissionRetrieve();
     this.getAppointment();
@@ -93,8 +101,10 @@ export class CollectorRecordSubmissionComponent implements OnInit {
   }
 
   getMaterials() {
+    this.material_isLoading = true;
     this.matService.getAllMaterials().subscribe( result => {
       this.materials = result.materials;
+      this.material_isLoading = false;
     });
   }
   subscribeToSubmissionRetrieve(){
@@ -103,6 +113,7 @@ export class CollectorRecordSubmissionComponent implements OnInit {
       //console.log(result);
       this.convertToTableData(result);
       //console.log(this.appointments);
+      this.submission_isLoading = false;
     });
   }
   subscribeToRecyclerExist(){
@@ -113,6 +124,7 @@ export class CollectorRecordSubmissionComponent implements OnInit {
         this.recycler = result;
         //console.log(this.recycler);
         this.form_submission.controls['recycler'].updateValueAndValidity();
+        this.recycler_isLoading = false;
       }
     });
   }
@@ -128,7 +140,13 @@ export class CollectorRecordSubmissionComponent implements OnInit {
   }
 
   submit() {
-    if ( this.form_submission.invalid ) {
+    Object.keys(this.form_submission.controls).forEach(field => { // {1}
+      const control = this.form_submission.get(field);            // {2}
+      control.markAsTouched({ onlySelf: true });       // {3}
+    });
+    
+
+    if ( this.form_submission.invalid || !this.materialExist || !this.recyclerExist ) {
       return
     }
 
@@ -191,6 +209,7 @@ export class CollectorRecordSubmissionComponent implements OnInit {
   }
 
   getAppointment(){
+    this.submission_isLoading = true;
     if ( this.userType == 'collector' ) {
       this.subService.getSubmissions(null);
     } else {

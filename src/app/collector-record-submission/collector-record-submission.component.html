@@ -27,7 +27,7 @@
         <div class="row row-control ">
           <h2>Appointments</h2>
           <div class="spacer"></div>
-          <div class="row row-action">
+          <div  class="row row-action">
             <label *ngIf="!mobile" for="search_recycler">{{ userType=='collector'? 'Recycler':'Collector'}}:</label>
             <div ng-controller="myCtrl">
               <input #myInput (keyup)="findUser(myInput.value)" ng-model="myValue"  name="search_recycler" value="" placeholder=" e.g. username" class="input-search">
@@ -36,7 +36,7 @@
         </div>
 
         <mat-card class="card-table-appointment">
-          <table *ngIf="dataSource.length>0" class="table table-appointment table-hover">
+          <table *ngIf="dataSource.length>0 && !submission_isLoading" class="table table-appointment table-hover">
             <thead>
               <tr>
                 <th>{{userType=='collector'? 'Recycler':'Collector'}}</th>
@@ -56,8 +56,11 @@
               </tr>
             </tbody>
           </table>
-          <div *ngIf="dataSource.length==0" class="text-center p-3">
+          <div *ngIf="dataSource.length==0 && !submission_isLoading" class="text-center p-3">
             No Appointment{{ appointments.length>0? userType=="collector"? ' with recycler \'' + myInput.value + '\'' :' with collector \'' + myInput.value + '\'':'' }}  <!--{{ myInput.length>0? myInput.value : 'No Appointment' }}-->
+          </div>
+          <div *ngIf="submission_isLoading" class="text-center p-3 w-100">
+            <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
           </div>
         </mat-card>
       </div>
@@ -83,9 +86,10 @@
         <div class="row row-control ">
           <h2>Submission Details</h2>
           <div class="spacer"></div>
-          <div class="row row-action">
-            <a mat-button  class="btn-cancel" (click)="selectedAppointment={}; isRecordingSubmission=false; setFormGroup(); form_submission.get('material').enable(); form_submission.get('recycler').enable()">Cancel</a>
-            <a mat-button  id="btnEdit1" (click)="submit()" class="btn-edit"> Submit </a>
+          <div *ngIf="!material_isLoading" class="row row-action">
+            <a *ngIf="!isSubmitting" mat-button  class="btn-cancel" (click)="selectedAppointment={}; isRecordingSubmission=false; setFormGroup(); form_submission.get('material').enable(); form_submission.get('recycler').enable()">Cancel</a>
+            <a *ngIf="!isSubmitting" mat-button  id="btnEdit1" (click)="submit()" class="btn-edit"> Submit </a>
+            <a *ngIf="isSubmitting" mat-button   class="btn-edit"> Submiting... </a>
           </div>
         </div>
         <!-- personal detail button group and header END -->
@@ -93,8 +97,10 @@
         <mat-card class="card-form-submission">
           <!-- recycler form START -->
 
-
-            <form [formGroup]="form_submission">
+            <div *ngIf="material_isLoading" class="text-center p-3 w-100">
+              <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
+            </div>
+            <form *ngIf="!material_isLoading" [formGroup]="form_submission">
               <mat-form-field appearance="outline">
                 <mat-label>Material</mat-label>
                 <input

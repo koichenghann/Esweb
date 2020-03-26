@@ -4,8 +4,10 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api'
+  apiUrl: 'https://secured-esweb.apps.us-east-2.starter.openshift-online.com/api'
 };
+//'https://secured-esweb.apps.us-east-2.starter.openshift-online.com/api'
+
 //(fast) (second server) http://silk-route-esweb.apps.us-east-2.starter.openshift-online.com/api/
 //(fast)  (fitst sever) http://route1-esweb.apps.us-west-1.starter.openshift-online.com/api
 //(slow) (firtst server) http://silkroute-esweb.apps.us-west-1.starter.openshift-online.com/api

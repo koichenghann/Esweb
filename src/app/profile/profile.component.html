@@ -20,16 +20,16 @@
         <div class="row row-control ">
           <h2>Personal Information</h2>
           <div class="spacer"></div>
-          <div class="row row-action">
+          <div *ngIf="!user_isLoading" class="row row-action">
             <a mat-button (click)="resetUser()" *ngIf="isEditingUser" class="btn-cancel">Cancel</a>
             <a mat-button (click)="editUserData()" id="btnEdit1" mode="edit" class="btn-edit"> {{ isEditingUser? 'Save' : 'Edit' }} </a>
           </div>
         </div>
         <!-- personal detail button group and header END -->
         <!-- personal detail from START -->
-        <mat-card class="card-form">
+        <mat-card *ngIf="!user_isLoading" class="card-form">
           <!-- recycler form START -->
-          <div class="form-container col-12" *ngIf="userType=='recycler'">
+          <div class="form-container col-12" *ngIf="userType=='recycler' && !user_isLoading">
 
             <form [formGroup]="form_recycler"   *ngIf="userType=='recycler'">
               <mat-form-field appearance="outline">
@@ -81,7 +81,7 @@
           </div>
           <!-- recycler form END -->
           <!-- collector form START -->
-          <div class="form-container col-12" *ngIf="userType=='collector'">
+          <div class="form-container col-12" *ngIf="userType=='collector' && !user_isLoading">
 
             <form [formGroup]="form_collector"   *ngIf="userType=='collector'">
               <mat-form-field appearance="outline">
@@ -143,6 +143,14 @@
             </form>
           </div>
           <!-- collector form END -->
+          <div *ngIf="user_isLoading" class="text-center p-3 w-100">
+            <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
+          </div>
+        </mat-card>
+        <mat-card *ngIf="user_isLoading">
+          <div *ngIf="user_isLoading" class="text-center p-3 w-100">
+            <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
+          </div>
         </mat-card>
         <!-- personal detail from END -->
       </div>
@@ -153,7 +161,7 @@
         <div class="row row-control">
           <h2>Collector Schedule</h2>
           <div class="spacer"></div>
-          <div class="row row-action">
+          <div *ngIf="!schedule_isLoading" class="row row-action">
             <a mat-button (click)="resetSched()" *ngIf="isEditingSched" class="btn-cancel">Cancel</a>
             <a mat-button (click)="editScheduleData()" id="btnEdit2" mode="edit" class="btn-edit"> {{ isEditingSched? 'Save' : 'Edit' }} </a>
           </div>
@@ -161,8 +169,11 @@
         <div class="table-con col-12" *ngIf="userType=='collector'">
           <mat-card class="card-schedule">
             <mat-card-content>
+              <div *ngIf="schedule_isLoading" class="text-center p-3 w-100">
+                <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
+              </div>
               <table #timeTable class="table" id="timeTable">
-                <thead>
+                <thead *ngIf="!schedule_isLoading">
                   <tr>
                     <th></th>
                     <th>start time</th>
@@ -191,7 +202,7 @@
         <div class="row row-control">
           <h2>Material Preferences</h2>
           <div class="spacer"></div>
-          <div class="row row-action">
+          <div *ngIf="!colMat_isLoading" class="row row-action">
             <a mat-button (click)="openDialog()"  class="btn-edit">Manage</a>
             <!--<a mat-button (click)="resetSched()" *ngIf="isEditingSched" class="btn-cancel">Cancel</a>-->
             <!--<a mat-button (click)="editScheduleData()" id="btnEdit2" mode="edit" class="btn-edit"> Edit </a>-->
@@ -200,7 +211,10 @@
 
         <div class="table-con col-12" *ngIf="userType=='collector'">
           <mat-card class="card-colMat">
-            <table class="table table-colMat" *ngIf="collectorMaterials.length!=0" >
+            <div *ngIf="colMat_isLoading" class="text-center p-3 w-100">
+              <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
+            </div>
+            <table class="table table-colMat" *ngIf="collectorMaterials.length!=0 && !colMat_isLoading" >
               <thead>
                 <tr>
                   <th>Material Id</th>
@@ -217,7 +231,7 @@
               </tbody>
             </table>
 
-            <div *ngIf="collectorMaterials.length==0" class="text-center">
+            <div *ngIf="collectorMaterials.length==0 && !colMat_isLoading" class="text-center">
               <br>
               No material yet, click <span class="btn-edit" (click)="openDialog()">Manage</span> to add more
               <br><br>

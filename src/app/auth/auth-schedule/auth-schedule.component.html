@@ -29,7 +29,10 @@
     </mat-card>
     <div class="haveError tableError text-center">{{ errorMessage }}</div>
     <div class="button-group">
-      <button mat-raised-button color="primary" (click)="confirmCreation()">PROCEED</button>
+      <button *ngIf="!isLoading" mat-raised-button color="primary" (click)="confirmCreation()">PROCEED</button>
+      <div *ngIf="isLoading" class="text-center w-100" style="padding-top: 0.7rem;">
+        <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
+      </div>
       <a href="" class=""  routerLink="/auth/signup">back</a>
     </div>
   </div>

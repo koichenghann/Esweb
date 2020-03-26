@@ -18,7 +18,7 @@ declare var M:any;
 export class MaterialFormComponent implements OnInit {
 
 
-
+  isLoading = true;
 
   constructor(public materialsService: MaterialsService, private notificationService: NotificationService) {}
 
@@ -84,8 +84,10 @@ export class MaterialFormComponent implements OnInit {
 
   //get all material data
   getAllMaterials(){
+    this.isLoading = true;
     this.materialsService.getAllMaterials().subscribe(res =>{
       this.materialData = res.materials;
+      this.isLoading = false;
     });
   }
 

@@ -9,6 +9,7 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./auth-login.component.css']
 })
 export class AuthLoginComponent implements OnInit {
+  isLoading = false;
   hide = true;
   form: FormGroup;
 
@@ -50,17 +51,25 @@ export class AuthLoginComponent implements OnInit {
 
 
   onLogin() {
-    //if (this.form.invalid){ return; }
 
-    this.isValid = false;
+
+
     let username = this.form.get('username').value;
     let password = this.form.get('password').value;
 
+    if (username=="" || password=="" ){ this.validateLoginField(); return; }
 
+    this.form.get('username').disable();
+    this.form.get('password').disable();
+    this.isLoading = true;
+    this.isValid = false;
 
     this.authService.checkCredentialValidity(username, password);
     this.authService.authStatusListener.subscribe(
       response => {
+        this.form.get('username').enable();
+        this.form.get('password').enable();
+        this.isLoading = false;
         console.log("RESPONSE: " + response);
         if (response) {
           this.isValid = true;
@@ -88,6 +97,7 @@ validateAuth(control: FormControl): ValidationErrors {
 
   //custom validation response
   validateInput(input: string){
+    this.isValid=true;
     switch (input) {
       case 'username' :
         if(this.form.get('username').hasError('required')) {

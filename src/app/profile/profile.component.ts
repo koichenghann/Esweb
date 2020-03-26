@@ -18,6 +18,11 @@ import { Material } from '../admin-manage-material/material.model';
 })
 export class ProfileComponent implements OnInit {
   //variable related to form
+  user_isLoading = true;
+  schedule_isLoading = true;
+  colMat_isLoading = true;
+  mat_isLoading = true;
+
   hide = true;
   userType = 'collector';
   form_recycler: FormGroup;
@@ -39,7 +44,7 @@ export class ProfileComponent implements OnInit {
   private mode = 'recycler';
   private uniqueUsernameListener: Subscription;
 
-
+  schedule;
 
   //variable related to schedule table
   week:ScheduleData[]=[];
@@ -72,11 +77,23 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.user_isLoading = true;
+    this.schedule_isLoading = true;
+    this.colMat_isLoading = true;
+    this.mat_isLoading = true;
+
       this.authService.setCurrentUrl(window.location.pathname);
 
-    //initialiseUserData
+
+
+
+
+
+    this.subscribeToUser();
     this.initialiseUserData();
+
     if ( this.userType == 'collector' ) {
+      this.subscribeToSchedule();
       this.initialiseScheduleData();
     }
 
@@ -98,12 +115,15 @@ export class ProfileComponent implements OnInit {
       }  else {
         this.collectorMaterials = [];
       }
+      this.colMat_isLoading = false;
     })
     this.authService.getCollectorMaterials();
+    this.colMat_isLoading = true;
   }
 
 
   openDialog() {
+    this.mat_isLoading = true;
     this.materialsService.getAllMaterials().subscribe( result => {
       //this.materials=[];
       if ( this.materials.length == 0 ) {
@@ -122,6 +142,7 @@ export class ProfileComponent implements OnInit {
             selected: selected
           });
         }
+        this.mat_isLoading = false;
       }
 
 
@@ -150,6 +171,7 @@ export class ProfileComponent implements OnInit {
 
   saveCollectorMaterial(materials:any) {
     //console.log(materials);
+    this.colMat_isLoading = true;
     this.authService.updateMaterial( materials, this.authService.getUserId() );
     //this.authService.getCollectorMaterials();
   }
@@ -171,6 +193,18 @@ export class ProfileComponent implements OnInit {
         }
       }*/
     } else {
+      console.log(this.form_collector.get('username').errors);
+      if ( this.userType == 'collector' ) {
+        Object.keys(this.form_collector.controls).forEach(field => { // {1}
+          const control = this.form_collector.get(field);            // {2}
+          control.markAsTouched({ onlySelf: true });       // {3}
+        });
+      } else {
+        Object.keys(this.form_recycler.controls).forEach(field => { // {1}
+          const control = this.form_recycler.get(field);            // {2}
+          control.markAsTouched({ onlySelf: true });       // {3}
+        });
+      }
       if ( this.saveUserData() ) {
         //document.getElementById('btnEdit1').innerHTML = "Edit";
         document.getElementById('btnEdit1').setAttribute('mode', 'edit');
@@ -308,44 +342,71 @@ export class ProfileComponent implements OnInit {
     this.isEditingUser = false;
     //document.getElementById('btnEdit1').innerHTML = "Edit";
     document.getElementById('btnEdit1').setAttribute('mode', 'edit');
-    this.initialiseUserData();
+    this.setFormGroup();
+    this.form_collector.disable();
+    this.form_recycler.disable();
+    this.setUserFormData(this.currentUser);
 
   }
   resetSched() {
     this.isEditingSched = false;
     //document.getElementById('btnEdit2').innerHTML = "Edit";
     document.getElementById('btnEdit2').setAttribute('mode', 'edit');
-
-    this.initialiseScheduleData();
+    this.setScheduleTableData(this.schedule);
+    //this.initialiseScheduleData();
   }
 
 
 
 
+  subscribeToUser(){
+     let userRetrievedListener : Subscription = this.authService.getUserIsRetrieved().subscribe(
+       (result) => {
+         this.currentUser = result;
 
+         this.setUserFormData(result);
 
+         this.user_isLoading=false;
+       });
+  }
+  subscribeToSchedule(){
+   let scheduleRetrievedListener : Subscription = this.authService.getScheduleIsRetrieved().subscribe(
+     (schedule) => {
+       this.schedule = schedule;
+       this.result = schedule;
+       this.setScheduleTableData(schedule);
+       this.schedule_isLoading=false;
+     });
+ }
+  setUserFormData(result){
+    //COLELCTOR
+    this.form_collector.get('username').setValue(result.username);
+    //this.form_collector.get('password').setValue(result.password);
+    this.form_collector.get('fullName').setValue(result.fullName);
+    this.form_collector.get('address').setValue(result.address);
+
+    //RECYCLER
+    this.form_recycler.get('username').setValue(result.username);
+    //this.form_collector.get('password').setValue(result.password);
+    this.form_recycler.get('fullName').setValue(result.fullName);
+  }
+  setScheduleTableData(schedule){
+    this.week =[];
+    let weekDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    for(var i=0;i<7;i++){
+        if ( schedule[i].startTime == null ) { schedule[i].startTime = '-'; }
+        if ( schedule[i].endTime == null ) { schedule[i].endTime = '-'; }
+        this.week.push({day:weekDay[i], startTime: schedule[i].startTime, endTime: schedule[i].endTime});
+    }
+  }
   //initialisation process
   initialiseUserData() {
     this.userType = this.authService.getUserType();
     this.setFormGroup();
     this.form_collector.disable();
     this.form_recycler.disable();
-    let userRetrievedListener : Subscription = this.authService.getUserIsRetrieved().subscribe(
-      (result) => {
-        this.currentUser = result;
 
-        //COLELCTOR
-        this.form_collector.get('username').setValue(result.username);
-        //this.form_collector.get('password').setValue(result.password);
-        this.form_collector.get('fullName').setValue(result.fullName);
-        this.form_collector.get('address').setValue(result.address);
-
-        //RECYCLER
-        this.form_recycler.get('username').setValue(result.username);
-        //this.form_collector.get('password').setValue(result.password);
-        this.form_recycler.get('fullName').setValue(result.fullName);
-
-      });
+    //this.user_isLoading = true;
     this.authService.getUser();
   }
   initialiseScheduleData() {
@@ -353,17 +414,7 @@ export class ProfileComponent implements OnInit {
     this.timePicker = `<form><input matInput class="timePicker" type="time" name="" value=""></form>`;
     this.timeTable = document.getElementById('timeTable');
 
-    let scheduleRetrievedListener : Subscription = this.authService.getScheduleIsRetrieved().subscribe(
-      (schedule) => {
-        this.result = schedule;
-        this.week =[];
-        let weekDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        for(var i=0;i<7;i++){
-            if ( schedule[i].startTime == null ) { schedule[i].startTime = '-'; }
-            if ( schedule[i].endTime == null ) { schedule[i].endTime = '-'; }
-            this.week.push({day:weekDay[i], startTime: schedule[i].startTime, endTime: schedule[i].endTime});
-        }
-      });
+    //this.schedule_isLoading = true;
     this.authService.getSchedule();
   }
 
@@ -371,8 +422,9 @@ export class ProfileComponent implements OnInit {
 
   //functions related to form control and user validation
   xd1() {
+    console.log('in xd1');
     let username = this.form_recycler.get('username').value;
-    if(username != null && username.length > 0){
+    if(username != null && username.length > 0 && !( username == this.currentUser.username)){
       this.uniqueUsernameListener = this.authService.getuniqueUsernameListener().subscribe(
         (result) => {
           if ( username == this.currentUser.username ) {
@@ -387,11 +439,17 @@ export class ProfileComponent implements OnInit {
         }
       );
       this.authService.checkUserExist(username);
+    } else {
+      this.isUnique = true;
+      this.form_recycler.controls['username'].updateValueAndValidity();
     }
   }
   xd2() {
+    console.log('in xd2');
+    this.isUnique = false;
     let username = this.form_collector.get('username').value;
-    if(username != null && username.length > 0){
+    if(username != null && username.length > 0 && !( username == this.currentUser.username)){
+      console.log('in backend test triggered');
       this.uniqueUsernameListener = this.authService.getuniqueUsernameListener().subscribe(
         (result) => {
           if ( username == this.currentUser.username ) {
@@ -406,6 +464,9 @@ export class ProfileComponent implements OnInit {
         }
       );
       this.authService.checkUserExist(username);
+    } else {
+      this.isUnique = true;
+      this.form_collector.controls['username'].updateValueAndValidity();
     }
   }
 
@@ -577,16 +638,20 @@ export class ProfileComponent implements OnInit {
 
   //functions related to schedule table control and validationList
   onClick(selectedCell: any){
+
     let table     = selectedCell.parentElement;
     let col2      = table.getElementsByTagName("td")[1];
     let col3      = table.getElementsByTagName("td")[2];
-
+    //console.log(col2);
+    //console.log(col3);
     let startTime = col2.innerHTML;
     let endTime   = col3.innerHTML;
 
     if (selectedCell.getAttribute('editing') == "true" && this.isEditingSched) {
+
       let cellValue = selectedCell.innerHTML;
       selectedCell.innerHTML = this.timePicker;
+      console.log(selectedCell);
       selectedCell.getElementsByClassName("timePicker")[0].value = cellValue;
 
       selectedCell.getElementsByClassName("timePicker")[0].focus();

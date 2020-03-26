@@ -25,7 +25,7 @@
 
         <mat-card>
           <mat-card-content>
-            <table class="table table-materials table-hover" >
+            <table *ngIf="!isLoading" class="table table-materials table-hover" >
               <thead>
                 <th>ID</th>
                 <th>Name</th>
@@ -43,6 +43,9 @@
                 </tr>
               </tbody>
             </table>
+            <div *ngIf="isLoading" class="text-center p-3 w-100">
+              <mat-spinner [diameter]="25"></mat-spinner>
+            </div>
           </mat-card-content>
         </mat-card>
       </div>
@@ -61,8 +64,11 @@
         <mat-card class="card-my mb-5">
           <mat-card-content >
 
-            <div *ngIf="!histories || histories.length==0" class="text-center p-3">
+            <div *ngIf="(!histories || histories.length==0) && !isLoading" class="text-center p-3">
               No Submission of this material yet.
+            </div>
+            <div *ngIf="isLoading" class="text-center p-3">
+              <mat-spinner [diameter]="25"></mat-spinner>
             </div>
 
             <!--<div class="emptyHolder text-center" *ngIf="!histories || histories.length==0">
@@ -135,17 +141,20 @@
   <main>
     <div class="container-fluid page-area">
       <div *ngIf="!viewHistory" class="row mt-2 row-material-table admin-row">
-        <div class="row row-control ">
+        <div  class="row row-control ">
           <h2>Select Material</h2>
           <div class="spacer"></div>
-          <div class="row row-action">
+          <div *ngIf="isLoading" class="row row-action">
             <!--<a mat-button  id="btnEdit1" mode="edit" class="btn-back"> back </a>-->
           </div>
         </div>
 
         <mat-card>
           <mat-card-content>
-            <table class="table table-materials table-hover" >
+            <div *ngIf="isLoading" class="text-center p-3">
+              <mat-spinner [diameter]="25"></mat-spinner>
+            </div>
+            <table *ngIf="!isLoading" class="table table-materials table-hover" >
               <thead>
                 <th>ID</th>
                 <th>Name</th>
@@ -170,7 +179,7 @@
 
 
       <div  *ngIf="viewHistory" class="row mt-2 row-submissions-table admin-row">
-        <div class="row row-control ">
+        <div  class="row row-control ">
           <h2>Submission of {{ material? material.materialName:'(material not selected)' }}</h2>
           <div class="spacer"></div>
           <div class="row row-action">
@@ -180,15 +189,18 @@
 
         <mat-card class="card-my mb-5">
           <mat-card-content >
-
-            <div *ngIf="!histories || histories.length==0" class="text-center p-3">
+            <div *ngIf="isLoading" class="text-center p-3">
+              <mat-spinner [diameter]="25"></mat-spinner>
+            </div>
+            <div *ngIf="(!histories || histories.length==0) && !isLoading" class="text-center p-3">
               No Submission of this material yet.
             </div>
 
             <!--<div class="emptyHolder text-center" *ngIf="!histories || histories.length==0">
               No History
             </div>-->
-            <table class="table table-submissions " *ngIf="histories&&histories.length>0">
+
+            <table class="table table-submissions " *ngIf="histories&&histories.length>0 && !isLoading">
               <thead>
                   <tr>
                     <th (click)="sortHistoryByID()">ID<mat-icon>{{ !sortedBySubmissionID? 'arrow_drop_down':'arrow_drop_up'}}</mat-icon></th>

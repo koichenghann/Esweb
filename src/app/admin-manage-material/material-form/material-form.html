@@ -1,5 +1,5 @@
 
-<div class="container-fluid">
+<div  class="container-fluid">
 
   <div class="row">
     <div class="container-fluid col-lg-4 col-md-12 col-sm-12">
@@ -18,19 +18,18 @@
         placeholder="Enter material ID:"
         #materialID = "ngModel">
 
-    <mat-form-field>
+
       <input
-        matInput
+
         [(ngModel)] = "this.materialsService.selectedMaterial.materialID"
-        type="text"
+        type="hidden"
         name="materialID"
         ngModel
         placeholder="Enter material ID:"
-        required
-        minlength="3"
+
+
         #materialID = "ngModel">
       <mat-error *ngIf="materialID.invalid">Please enter a material ID!</mat-error>
-    </mat-form-field>
 
     <mat-form-field>
       <input
@@ -103,7 +102,10 @@
     <div class="container text-center">
       <h1 class="display-2">List of Materials</h1>
     </div>
-    <table class="table">
+    <div  class="text-center pt-5 w-100">
+      <mat-spinner *ngIf="isLoading" [diameter]="50" style="margin: auto;"></mat-spinner>
+    </div>
+    <table *ngIf="!isLoading" class="table">
       <thead>
         <tr>
           <th scope="col" class="materialID_col">Material ID</th>

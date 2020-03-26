@@ -23,6 +23,7 @@
         placeholder="Username"
         formControlName="username"
         (ngModelChange)="validateInput('username')"
+        (keyup)="this.validateLoginField();"
         required
         >
         <mat-error *ngIf="form.get('username').invalid">{{ usernameError }}</mat-error>
@@ -39,6 +40,7 @@
         placeholder="Password"
         formControlName="password"
         (ngModelChange)="validateInput('password')"
+        (keyup)="this.validateLoginField();"
         required
         >
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
@@ -46,7 +48,10 @@
         </button>
         <mat-error *ngIf="form.get('password').invalid">{{ passwordError }}</mat-error>
     </mat-form-field>
-    <button class="btn_color" mat-raised-button color="accent" type="submit" >Login</button>
+    <button *ngIf="!isLoading" class="btn_color" mat-raised-button color="accent" type="submit" >Login</button>
+    <div *ngIf="isLoading" class="text-center w-100" style="padding-top: 0.7rem;">
+      <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
+    </div>
   </form>
   <div class="option">Don't have an account? <a routerLink="/auth/signup">Sign Up here</a></div>
 </mat-card>

@@ -10,7 +10,7 @@ import { UserData } from '../user-data.model';
 })
 export class AuthScheduleComponent implements OnInit {
   week:ScheduleData[]=[];
-
+  isLoading = false;
   //editable = false;
   tableLoadLiao = false;
   timePicker;
@@ -28,6 +28,7 @@ export class AuthScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isLoading = false;
       this.authService.setCurrentUrl(window.location.pathname);
     //this.editable = false;
     this.timePicker = `<form><input matInput class="timePicker" type="time" name="" value=""></form>`;
@@ -189,6 +190,7 @@ export class AuthScheduleComponent implements OnInit {
 
   confirmCreation(){
     if (this.timeIsValid) {
+      this.isLoading = true;
       let weekDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       for(var i=0;i<7;i++){
         if(this.result[i].day=="" ) {this.result[i].day = weekDay[i];}

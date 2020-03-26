@@ -11,13 +11,17 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./auth-signup.component.css']
 })
 export class AuthSignupComponent implements OnInit {
+  recycler_isLoading = false;
+  collector_isLoading = false;
   hide = true;
   form_recycler: FormGroup;
   form_collector: FormGroup;
   start1;
   result;
   isUnique = true;
+  isValid = false;
   selectedIndex = "0";
+  isCheckingUsername = false;
 
   //var for error message
   initialError = 'required';
@@ -51,6 +55,28 @@ export class AuthSignupComponent implements OnInit {
     //this.selectedIndex = "1";
     //check if existing col signup
     this.initialiseCol();
+
+
+
+    this.uniqueUsernameListener = this.authService.getuniqueUsernameListener().subscribe(
+      (result) => {
+        //console.log(result + username);
+        this.isValid = result;
+        this.isUnique = result;
+        this.collector_isLoading = false;
+        this.recycler_isLoading = false;
+        this.form_collector.enable();
+        this.form_recycler.enable();
+        if(!result){
+          this.recycler_usernameError  = "username is taken";
+          this.collector_usernameError  = "username is taken";
+        }
+        this.form_recycler.controls['username'].updateValueAndValidity();
+        this.form_collector.controls['username'].updateValueAndValidity();
+        console.log("is unique: " + result);
+        //this.recycler_usernameError  = "username is taken";
+      }
+    );
   }
 
   initialiseCol() {
@@ -65,63 +91,57 @@ export class AuthSignupComponent implements OnInit {
   }
 
   xd1() {
+    this.isValid = false;
+    this.isUnique = true;
+    this.form_recycler.controls['username'].updateValueAndValidity();
+
     let username = this.form_recycler.get('username').value;
     if(username != null && username.length > 0){
-      this.uniqueUsernameListener = this.authService.getuniqueUsernameListener().subscribe(
-        (result) => {
-          this.isUnique = result;
-          if(!result){
-            this.recycler_usernameError  = "username is taken";
-          }
-          this.form_recycler.controls['username'].updateValueAndValidity();
-          console.log("is unique: " + result);
-          //this.recycler_usernameError  = "username is taken";
-        }
-      );
       this.authService.checkUserExist(username);
     }
   }
 
   xd2() {
+    this.isValid = false;
+    this.isUnique = true;
+    this.form_collector.controls['username'].updateValueAndValidity();
+
     let username = this.form_collector.get('username').value;
     if(username != null && username.length > 0){
-      this.uniqueUsernameListener = this.authService.getuniqueUsernameListener().subscribe(
-        (result) => {
-          this.isUnique = result;
-          if(!result){
-            this.collector_usernameError  = "username is taken";
-          }
-          this.form_collector.controls['username'].updateValueAndValidity();
-          //this.collector_usernameError  = "username is taken";
-        }
-      );
       this.authService.checkUserExist(username);
     }
   }
 
 
   onCollectorSignup() {
-    if (this.form_collector.invalid) {
+    if ( !this.form_collector.invalid ) {this.collector_isLoading = true; this.form_collector.disable();}
+    if (this.form_collector.invalid || !this.isValid) {
       return;
     }
 
-    let username  = this.form_collector.get('username').value;
-    let password  = this.form_collector.get('password').value;
-    let fullName  = this.form_collector.get('fullName').value;
-    let address   = this.form_collector.get('address').value;
-    let schedule  = null;
-    let userType  = "collector";
+    if (this.isValid) {
 
+      this.form_collector.disable();
+      //this.createCollector();
+    }
 
-    this.authService.createColPart1(username, password, fullName, address, schedule, userType);
-    //this.form_collector.reset();
   }
 
   onRecyclerSignup() {
-    if (this.form_recycler.invalid) {
+    if ( !this.form_recycler.invalid ) {this.recycler_isLoading = true; this.form_recycler.disable();}
+    if (this.form_recycler.invalid || !this.isValid) {
       return;
     }
+    if (this.isValid) {
 
+      this.form_recycler.disable();
+      //this.createRecycler();
+    }
+
+
+  }
+
+  createRecycler(){
     let username  = this.form_recycler.get('username').value;
     let password  = this.form_recycler.get('password').value;
     let fullName  = this.form_recycler.get('fullName').value;
@@ -132,6 +152,18 @@ export class AuthSignupComponent implements OnInit {
 
     this.authService.createUser(username, password, fullName, address, schedule, userType);
     //this.form_recycler.reset();
+  }
+  createCollector(){
+    let username  = this.form_collector.get('username').value;
+    let password  = this.form_collector.get('password').value;
+    let fullName  = this.form_collector.get('fullName').value;
+    let address   = this.form_collector.get('address').value;
+    let schedule  = null;
+    let userType  = "collector";
+
+
+    this.authService.createColPart1(username, password, fullName, address, schedule, userType);
+    //this.form_collector.reset();
   }
 
 
@@ -203,15 +235,19 @@ export class AuthSignupComponent implements OnInit {
   }
 
   tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+
+
     this.setFormGroup();
     this.form_recycler.reset();
+    this.form_recycler.controls.username.setErrors(null);
     this.form_collector.reset();
     this.authService.removeTempCol();
+    console.log('tab changed');
   }
 
   //custom validation response
   validateCollectorInput(input: string){
-    this.xd2();
+
     switch (input) {
       case 'collector_username' :
         if(this.form_collector.get('username').hasError('required')) {
@@ -264,7 +300,7 @@ export class AuthSignupComponent implements OnInit {
   }
 
   validateRecyclerInput(input: string){
-    this.xd1();
+
     switch (input) {
       case 'recycler_username' :
         if(this.form_recycler.get('username').hasError('required')) {

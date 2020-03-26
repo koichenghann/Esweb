@@ -15,7 +15,7 @@ export class DashboardUserComponent {
     this.titleService.setTitle("ESWeb | User Home"
     );}
 
-
+    isLoading = true;
     //variable for dynamic data
     userName ='';
     ecolevel = '';
@@ -27,6 +27,8 @@ export class DashboardUserComponent {
     upperPoints = 0;
     progress = 0;
     ngOnInit(){
+      this.isLoading = true;
+
       this.authService.setCurrentUrl(window.location.pathname);
       this.userName = this.authService.getFullName();
       this.pointToLevel = 'Your Points:';
@@ -60,6 +62,8 @@ export class DashboardUserComponent {
         if ( Number(this.ecoPoints) >= 1000 ) {
           this.pointsNeededCaption = 'You have reached the pinnacle of Recycling'
         }
+
+        this.isLoading=false;
       });
       this.authService.getPoints();
 

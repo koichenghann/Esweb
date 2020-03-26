@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserData } from './user-data.model';
 import { map } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { environment } from '../../environments/environment';
 
@@ -34,7 +35,7 @@ export class AuthService implements OnInit{
 
   ngOnInit(): void {}
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, public snackBar: MatSnackBar) { }
 
   getuniqueUsernameListener() {
     return this.uniqueUsernameListener.asObservable();
@@ -194,7 +195,7 @@ export class AuthService implements OnInit{
         { userData, userId }
       )
       .subscribe( result => {
-
+        this.snackBar.open('Profile Updated Succesfully' , null , {duration: 2000});
         //not defined
       }, error => {
         console.log(error);//no defined
@@ -208,7 +209,7 @@ export class AuthService implements OnInit{
       )
       .subscribe(
         result => {
-          //not defined
+          this.snackBar.open('Schedule Updated Succesfully' , null , {duration: 2000});
         },
         error => {
           console.log(error);
@@ -223,7 +224,7 @@ export class AuthService implements OnInit{
       )
       .subscribe(
         result => {
-          console.log('this ran')
+          this.snackBar.open('Material Preference Updated Succesfully' , null , {duration: 2000});
           this.getCollectorMaterials();
         },
         error => {
@@ -259,7 +260,7 @@ export class AuthService implements OnInit{
       .post(BACKEND_URL + "/createCollector", collectorData)
       .subscribe( result =>{
           //console.log('schedule created successfully, id: ' + result);
-          alert("Signup Succesfull.\nRedirecting to login page.");
+          this.snackBar.open('Signed Up as Collector Succesfully' , null , {duration: 2000});
           this.router.navigate(['/auth/login']);
       }, error => {
         //console.log('create collector post failed: ' + error.message );
@@ -301,8 +302,10 @@ export class AuthService implements OnInit{
       this.http
         .post(BACKEND_URL + "/signup", userData)
         .subscribe(() => {
+          this.snackBar.open('Signed Up as Recycler Succesfully' , null , {duration: 2000});
           this.router.navigate(["/auth/login"]);
         }, error => {
+          this.snackBar.open(error , null , {duration: 10000});
           console.log('something about auth status listener: ' + error.message);
         });
     }
@@ -321,8 +324,10 @@ export class AuthService implements OnInit{
       this.http
         .post(BACKEND_URL + "/signup", userData)
         .subscribe(() => {
+          this.snackBar.open('Signed Up as Collector Succesfully' , null , {duration: 2000});
           this.router.navigate(["/auth/login"]);
         }, error => {
+          this.snackBar.open(error , null , {duration: 10000});
           console.log('something about auth status listener: ' + error.message);
         });
     }
@@ -371,12 +376,15 @@ export class AuthService implements OnInit{
           //this.router.navigate();
           if (this.userType == 'recycler') {
             this.router.navigate(['/dashboard-user']);
+            this.snackBar.open('Logged In as Recycler' , null , {duration: 10000});
           }
           else if  (this.userType == 'admin') {
             this.router.navigate(['/dashboard-admin']);
+            this.snackBar.open('Logged In as Admin' , null , {duration: 10000});
           }
           else {
             this.router.navigate(['/dashboard-collector']);
+            this.snackBar.open('Logged In as Collector' , null , {duration: 10000});
           }
         }
       }, error => {
@@ -386,12 +394,16 @@ export class AuthService implements OnInit{
 
 
   logout(){
+    if ( this.getIsAuth() ) {
+      this.snackBar.open('You have been logged out.' , null , {duration: 2000});
+    }
     this.clearAuthData()
     this.token = null;
     this.tokenTimer = null;
     this.userId = null;
     this.userType = null;
     this.authStatusListener.next(false);
+
   }
 
 

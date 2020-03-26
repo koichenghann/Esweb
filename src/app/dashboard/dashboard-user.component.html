@@ -85,7 +85,7 @@
 
       <div class="container-fluid col-lg-4 col-md-4 col-sm-12 mt-2">
         <mat-card>
-        <mat-card-header>
+        <mat-card-header *ngIf="!isLoading">
           <mat-card-title>{{ ecolevel }}&nbsp;<i class="fas fa-crown"></i></mat-card-title>
           <mat-card-subtitle>
             {{ pointToLevel }}
@@ -93,7 +93,7 @@
           </mat-card-subtitle>
         </mat-card-header>
 
-          <mat-card-content>
+          <mat-card-content *ngIf="!isLoading">
             <div class="container-fluid text-right mt-3 mb-3">
               <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
             <i class="fab fa-jedi-order"></i>
@@ -102,6 +102,11 @@
             <span class="font-italic text-center">{{ pointsNeededCaption }}</span>
          </div>
          </mat-card-content>
+          <mat-card-content *ngIf="isLoading">
+            <div *ngIf="isLoading" class="text-center w-100">
+              <mat-spinner [diameter]="25" style="margin: auto;"></mat-spinner>
+            </div>
+          </mat-card-content>
         </mat-card>
         </div>
 

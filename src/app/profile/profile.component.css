@@ -24,7 +24,9 @@
 
 
 
-
+mat-card {
+	width: 100%
+}
 .form-container{
   height: auto;
   padding: 0;
