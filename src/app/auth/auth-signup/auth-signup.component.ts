@@ -122,7 +122,7 @@ export class AuthSignupComponent implements OnInit {
     if (this.isValid) {
 
       this.form_collector.disable();
-      //this.createCollector();
+      this.createCollector();
     }
 
   }
@@ -135,7 +135,7 @@ export class AuthSignupComponent implements OnInit {
     if (this.isValid) {
 
       this.form_recycler.disable();
-      //this.createRecycler();
+      this.createRecycler();
     }
 
 

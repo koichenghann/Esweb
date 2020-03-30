@@ -183,8 +183,8 @@
                 <tbody>
                   <tr *ngFor="let day of week">
                     <td class="myCol"><b>{{ day.day }}</b></td>
-                    <td class="myCol" #col2 (click)="onClick(col2)" [attr.editing]="isEditingSched" edited="false" mode="edit">{{ day.startTime }}</td>
-                    <td class="myCol" #col3 (click)="onClick(col3)" [attr.editing]="isEditingSched" edited="false" mode="edit">{{ day.endTime }}</td>
+                    <td class="myCol" #col2 (click)="onClick(col2)" [attr.isEditing]="isEditingSched" editing="false" edited="false" mode="edit">{{ day.startTime }}</td>
+                    <td class="myCol" #col3 (click)="onClick(col3)" [attr.isEditing]="isEditingSched" editing="false" edited="false" mode="edit">{{ day.endTime }}</td>
                   </tr>
                 </tbody>
               </table>

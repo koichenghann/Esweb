@@ -114,19 +114,18 @@ table{
   table-layout: fixed !important;
   margin: 0 !important;
 }
-td[editing='false'] {
+td[isEditing='false'] {
   color: #b5b5b5;
 }
-td[editing='true'] {
+td[isEditing='true'] {
   color: #636363;
 }
-td[editing='true']:hover{
+td[isEditing='true']:hover{
   background-color: #ededed;
   border: solid 1px;
 }
-.table > thead > tr:first-child > th {
-    border-top: none;
-}
+
+
 
 /*.table > thead > tr > th{
 	border: none;

@@ -411,7 +411,7 @@ export class ProfileComponent implements OnInit {
   }
   initialiseScheduleData() {
     this.timeIsValid = true;
-    this.timePicker = `<form><input matInput class="timePicker" type="time" name="" value=""></form>`;
+    this.timePicker = `<form><input class="timePicker" type="time" name="" value=""></form>`;
     this.timeTable = document.getElementById('timeTable');
 
     //this.schedule_isLoading = true;
@@ -638,7 +638,6 @@ export class ProfileComponent implements OnInit {
 
   //functions related to schedule table control and validationList
   onClick(selectedCell: any){
-
     let table     = selectedCell.parentElement;
     let col2      = table.getElementsByTagName("td")[1];
     let col3      = table.getElementsByTagName("td")[2];
@@ -647,7 +646,7 @@ export class ProfileComponent implements OnInit {
     let startTime = col2.innerHTML;
     let endTime   = col3.innerHTML;
 
-    if (selectedCell.getAttribute('editing') == "true" && this.isEditingSched) {
+    if (selectedCell.getAttribute('editing') == "false" && this.isEditingSched) {
 
       let cellValue = selectedCell.innerHTML;
       selectedCell.innerHTML = this.timePicker;
@@ -665,7 +664,7 @@ export class ProfileComponent implements OnInit {
         } else {
           selectedCell.innerHTML = 'edit';
         }
-        //selectedCell.setAttribute('editing', "false");
+        selectedCell.setAttribute('editing', "false");
 
 
 
@@ -728,11 +727,11 @@ export class ProfileComponent implements OnInit {
           }
         }
 
-        /*if(selectedCell.innerHTML == 'edit'){
+        if(selectedCell.innerHTML == 'edit'){
           selectedCell.setAttribute('edited', 'false');
         } else {
           selectedCell.setAttribute('edited', 'true');
-        }*/
+        }
 
 
 
