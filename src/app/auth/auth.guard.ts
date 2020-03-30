@@ -26,6 +26,7 @@ export class AuthGuard implements CanActivate {
 
       //let accessible = false;
       switch (targetUrl.toString()) {
+
         case 'history':
           if ( isAuth ) {
             return true;
@@ -96,7 +97,7 @@ export class AuthGuard implements CanActivate {
           //let currentUrl = state.url
 
           if(isAuth){
-            if(curr == '/home') {
+            if(curr == '/home' || curr == '/Esweb/') {
               if (userType == 'collector') {
                 this.router.navigate(['/dashboard-collector']);
               }
@@ -107,15 +108,17 @@ export class AuthGuard implements CanActivate {
                 this.router.navigate(['/dashboard-admin']);
               }
               return false;
+            } else {
+              this.router.navigate(['']);
             }
 
-            if(confirm("Do you want to log out?")){
+            /*if(confirm("Do you want to log out?")){
               this.authService.logout();
               return true;
             } else {
               this.router.navigate([curr]);
               return false;
-            }
+            }*/
           }
           return true;
           break;
@@ -124,7 +127,7 @@ export class AuthGuard implements CanActivate {
         case 'auth,signup':
           //let currentUrl = state.url
           if(isAuth){
-            if(curr == '/home') {
+            if(curr == '/home' || curr == '/Esweb/') {
               if (userType == 'collector') {
                 this.router.navigate(['/dashboard-collector']);
               }
@@ -135,6 +138,8 @@ export class AuthGuard implements CanActivate {
                 this.router.navigate(['/dashboard-admin']);
               }
               return false;
+            } else {
+              this.router.navigate(['']);
             }
 
             /*if(confirm("Do you want to log out?")){
