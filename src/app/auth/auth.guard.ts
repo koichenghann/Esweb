@@ -137,12 +137,12 @@ export class AuthGuard implements CanActivate {
               return false;
             }
 
-            if(confirm("Do you want to log out?")){
+            /*if(confirm("Do you want to log out?")){
               return true;
             } else {
               this.router.navigate([prev]);
               return false;
-            }
+            }*/
           }
           return true;
           break;
