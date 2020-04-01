@@ -212,6 +212,7 @@ export class AuthService implements OnInit{
           this.snackBar.open('Schedule Updated Succesfully' , null , {duration: 2000});
         },
         error => {
+          this.snackBar.open('Schedule Updated Succesfully' , null , {duration: 2000});
           console.log(error);
         }
       );

@@ -352,6 +352,7 @@ export class ProfileComponent implements OnInit {
   resetSched() {
     this.isEditingSched = false;
     this.errorMessage = "";
+    this.timeIsValid = true;
     //document.getElementById('btnEdit2').innerHTML = "Edit";
     document.getElementById('btnEdit2').setAttribute('mode', 'edit');
     this.setScheduleTableData(this.schedule);
@@ -685,12 +686,12 @@ export class ProfileComponent implements OnInit {
           if (startTime=='edit'&&endTime!='edit') {
             col2.setAttribute('class', 'haveError');
             isValid = false;
-            error = "start time undefined for " + col1.innerHTML;
+            error = "start time undefined for " + col1.getElementsByTagName("b")[0].innerHTML;
           }
           if (startTime!='edit'&&endTime=='edit') {
             col3.setAttribute('class', 'haveError');
             isValid = false;
-            error = "end time undefined for " + col1.innerHTML;
+            error = "end time undefined for " + col1.getElementsByTagName("b")[0].innerHTML;
           }
           if ((startTime=='edit'&&endTime=='edit') || (startTime!='edit'&&endTime!='edit')) {
             col2.setAttribute('class', ' ');
