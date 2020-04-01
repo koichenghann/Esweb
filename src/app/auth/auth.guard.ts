@@ -23,10 +23,12 @@ export class AuthGuard implements CanActivate {
 
       console.log("[route-guard] is Auth  :" + isAuth);
       console.log("[route-guard] switch on:" + state.url);
+      console.log("curr: " + targetUrl.toString());
 
       //let accessible = false;
       switch (targetUrl.toString()) {
 
+        case 'Esweb,history':
         case 'history':
           if ( isAuth ) {
             return true;
@@ -35,6 +37,7 @@ export class AuthGuard implements CanActivate {
           return false;
           break;
 
+        case 'Esweb,make-appointment':
         case 'make-appointment':
           if ( isAuth && userType == 'recycler' ) {
             return true;
@@ -43,6 +46,7 @@ export class AuthGuard implements CanActivate {
           return false;
           break;
 
+        case 'Esweb,record-submission':
         case 'record-submission':
           if ( isAuth && userType != 'admin' ) {
             return true;
@@ -51,6 +55,7 @@ export class AuthGuard implements CanActivate {
           return false;
           break;
 
+        case 'Esweb,add-submission':
         case 'add-submission':
           if ( isAuth && userType == 'collector' ) {
             return true;
@@ -59,6 +64,7 @@ export class AuthGuard implements CanActivate {
           return false;
           break;
 
+        case 'Esweb,dashboard-user':
         case 'dashboard-user':
           if (userType == 'recycler' && isAuth) {
             return true;
@@ -67,6 +73,7 @@ export class AuthGuard implements CanActivate {
           return false;
           break;
 
+        case 'Esweb,dashboard-collector':
         case 'dashboard-collector':
           if (userType == 'collector' && isAuth) {
             return true;
@@ -75,6 +82,7 @@ export class AuthGuard implements CanActivate {
           return false;
           break;
 
+        case 'Esweb,dashboard-admin':
         case 'dashboard-admin':
           if (userType == 'admin' && isAuth) {
             return true;
@@ -84,6 +92,7 @@ export class AuthGuard implements CanActivate {
           break;
 
 
+        case 'Esweb,admin,manage-material':
         case 'admin,manage-material':
 
           if (userType == 'admin' && isAuth) {
@@ -93,11 +102,12 @@ export class AuthGuard implements CanActivate {
           return false;
           break;
 
+        case 'Esweb,auth,login':
         case 'auth,login':
           //let currentUrl = state.url
-
+          console.log('login guard ran');
           if(isAuth){
-            if(curr == '/home' || curr == '/Esweb/') {
+
               if (userType == 'collector') {
                 this.router.navigate(['/dashboard-collector']);
               }
@@ -108,9 +118,6 @@ export class AuthGuard implements CanActivate {
                 this.router.navigate(['/dashboard-admin']);
               }
               return false;
-            } else {
-              this.router.navigate(['']);
-            }
 
             /*if(confirm("Do you want to log out?")){
               this.authService.logout();
@@ -123,11 +130,11 @@ export class AuthGuard implements CanActivate {
           return true;
           break;
 
-
+        case 'Esweb,auth,signup':
         case 'auth,signup':
           //let currentUrl = state.url
           if(isAuth){
-            if(curr == '/home' || curr == '/Esweb/') {
+
               if (userType == 'collector') {
                 this.router.navigate(['/dashboard-collector']);
               }
@@ -138,9 +145,7 @@ export class AuthGuard implements CanActivate {
                 this.router.navigate(['/dashboard-admin']);
               }
               return false;
-            } else {
-              this.router.navigate(['']);
-            }
+          
 
             /*if(confirm("Do you want to log out?")){
               return true;
@@ -152,7 +157,7 @@ export class AuthGuard implements CanActivate {
           return true;
           break;
 
-
+        case 'Esweb,manage-profile':
         case 'manage-profile':
           //let currentUrl = state.url
           if(isAuth){
@@ -165,7 +170,7 @@ export class AuthGuard implements CanActivate {
           return true;
           break;
 
-
+        case 'Esweb,auth,schedule':
         case 'auth,schedule':
           if(this.authService.getTempCol()){
             return true;

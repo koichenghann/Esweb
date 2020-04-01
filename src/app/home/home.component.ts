@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit{
 
     logout(){
       this.authService.logout();
+      this.isAuth = this.authService.getIsAuth();
     }
 
 }
