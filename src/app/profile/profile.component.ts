@@ -107,7 +107,7 @@ export class ProfileComponent implements OnInit {
   initialiseMaterialTable() {
 
     this.authService.getCollectorMaterialUpdatedListener().subscribe( result => {
-      //console.log(result);
+      console.log(result);
       //console.log('table refreshed');
       //console.log(result);
       if ( result ) {
@@ -323,6 +323,7 @@ export class ProfileComponent implements OnInit {
 
   saveScheduleData(){
     if(this.timeIsValid){
+      this.errorMessage = "";
       let weekDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       for(var i=0;i<7;i++){
         this.result[i].day = weekDay[i];
@@ -350,6 +351,7 @@ export class ProfileComponent implements OnInit {
   }
   resetSched() {
     this.isEditingSched = false;
+    this.errorMessage = "";
     //document.getElementById('btnEdit2').innerHTML = "Edit";
     document.getElementById('btnEdit2').setAttribute('mode', 'edit');
     this.setScheduleTableData(this.schedule);

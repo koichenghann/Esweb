@@ -91,7 +91,7 @@ export class MaterialsService {
  }
 
  deleteMaterial(_id: String) {
-   return this.http.delete(BACKEND_URL +_id)
+   return this.http.delete(BACKEND_URL + "/" +_id);
  }
 
 
