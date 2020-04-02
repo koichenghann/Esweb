@@ -91,7 +91,7 @@ export class CollectorRecordSubmissionComponent implements OnInit {
     //console.log('size: ' + window.screen.width + " mobile: " + this.mobile);
   }
   setMode(){
-    if ( this.currentRoute == '/add-submission') {
+    if ( this.currentRoute == '/add-submission' || this.currentRoute == '/Esweb/add-submission') {
       this.authService.setCurrentUrl(this.currentRoute);
       this.isAddingSubmission = true;
     }
@@ -144,7 +144,7 @@ export class CollectorRecordSubmissionComponent implements OnInit {
       const control = this.form_submission.get(field);            // {2}
       control.markAsTouched({ onlySelf: true });       // {3}
     });
-    
+
 
     if ( this.form_submission.invalid || !this.materialExist || !this.recyclerExist ) {
       return
