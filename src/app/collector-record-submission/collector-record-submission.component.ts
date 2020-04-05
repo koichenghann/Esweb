@@ -246,7 +246,7 @@ export class CollectorRecordSubmissionComponent implements OnInit {
       this.selectedAppointment = selectedAppointment;
       this.isRecordingSubmission=true;
       //this.setFormGroup();
-      this.form_submission.get('material').disable();
+      //this.form_submission.get('material').disable();
       this.form_submission.get('recycler').disable()
       this.form_submission.get('material').setValue(this.selectedAppointment.materialName);
       this.form_submission.get('recycler').setValue(this.selectedAppointment.recyclerUsername);
